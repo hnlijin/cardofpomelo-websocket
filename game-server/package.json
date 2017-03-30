@@ -1,9 +1,9 @@
 {
-    "name":"cardofpomelo-websocket",
-    "version":"0.0.1",
-    "private":false,
-    "dependencies":{
-        "pomelo":"2.2.5"
-    }
+  "name": "cardofpomelo-websocket",
+  "version": "0.0.1",
+  "private": false,
+  "dependencies": {
+    "pomelo": "2.2.5",
+    "pomelo-sync-plugin": "0.0.2"
+  }
 }
-
