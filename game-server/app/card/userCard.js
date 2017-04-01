@@ -7,11 +7,11 @@ var utils = require('../util/utils');
 var userCard = module.exports;
 
 /**
- * get user infomation by userId
+   * get user infomation by userId
  * @param {String} uid UserId
  * @param {function} cb Callback function
  */
-userCard.getUserById = function (uid, cb){
+userCard.getUserByUid = function (uid, cb){
 	var sql = 'select * from	User where id = ?';
 	var args = [uid];
 	pomelo.app.get('dbclient').query(sql,args,function(err, res){
@@ -29,13 +29,13 @@ userCard.getUserById = function (uid, cb){
 };
 
 /**
- * delete user by username
+ * delete user by uid
  * @param {String} username
  * @param {function} cb Call back function.
  */
-userCard.deleteByName = function (username, cb){
-	var sql = 'delete from	User where name = ?';
-	var args = [username];
+userCard.deleteByUid = function (uid, cb){
+	var sql = 'delete from	User where uid = ?';
+	var args = [uid];
 	pomelo.app.get('dbclient').query(sql,args,function(err, res){
 		if(err !== null){
 				utils.invokeCallback(cb,err.message, null);
@@ -51,20 +51,19 @@ userCard.deleteByName = function (username, cb){
 
 /**
  * Create a new user
- * @param (String) username
- * @param {String} password
+ * @param (String) name
  * @param {String} from Register source
  * @param {function} cb Call back function.
  */
-userCard.createUser = function (username, password, from, cb){
-	var sql = 'insert into User (name,password,`from`,loginCount,lastLoginTime) values(?,?,?,?,?)';
+userCard.createUser = function (name, from, cb){
+	var sql = 'insert into User (name,`from`,coins,roomCards,loginCount,lastLoginTime) values(?,?,?,?,?)';
 	var loginTime = Date.now();
-	var args = [username, password, from || '', 1, loginTime];
+	var args = [name, from || '', 1000, 100, 1, loginTime];
 	pomelo.app.get('dbclient').insert(sql, args, function(err,res){
 		if(err !== null){
 			utils.invokeCallback(cb, {code: err.number, msg: err.message}, null);
 		} else {
-			var user = new User({id: res.insertId, name: username, password: password, loginCount: 1, lastLoginTime:loginTime});
+			var user = new User({uid: res.insertId, name: name, coins: res.coins, roomCards: res.roomCards, loginCount: 1, lastLoginTime:loginTime});
 			utils.invokeCallback(cb, null, user);
 		}
 	});
